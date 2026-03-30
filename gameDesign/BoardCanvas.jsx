@@ -1120,7 +1120,7 @@ export default function BoardCanvas({
           <span>Connections</span><span style={{ fontSize: '8px' }}>{legendOpen ? '▲' : '▼'}</span>
         </button>
         {legendOpen && (
-          <div className="absolute bottom-8 left-0 p-2.5 rounded-lg" style={{ background: 'rgba(10,14,28,0.95)', backdropFilter: 'blur(8px)', border: '1px solid rgba(100,116,139,0.4)', minWidth: '148px' }}>
+          <div style={{ position: 'absolute', bottom: 'calc(100% + 4px)', left: 0, padding: '10px', borderRadius: '8px', background: 'rgba(10,14,28,0.95)', backdropFilter: 'blur(8px)', border: '1px solid rgba(100,116,139,0.4)', minWidth: '148px', whiteSpace: 'nowrap' }}>
             {EDGE_LEGEND.map(({ type, label }) => (
               <div key={type} className="flex items-center gap-2 py-0.5">
                 <svg width="28" height="10" style={{ flexShrink: 0 }}>
