@@ -49,9 +49,9 @@
                            "id":  "gameDesign",
                            "dirPath":  "S:\\JoseAbraham\\extensions\\gameDesign",
                            "defaultEnabled":  true,
-                           "version":  "1.8.0",
+                           "version":  "2.2.0",
                            "category":  "views",
-                           "description":  "Narrative Design Board with full Mission Kernel system (NPCs, Locations, Systems, DAS, House Points, Choice Impacts, Branching Endings, World State, Rumors). AI-powered mission generation via /mission command. Board patches from AI Chat via /board command. Paste board-patch JSON directly onto canvas. Right-click export (text/CSV) per node, multi-select, or whole board. Image/video attach in Inspector.",
+                           "description":  "Game Design Board v2.1: 8-port connection system (connect from any side), videoPlayer and imageNode types, SVG icons on all 15 node types, Miro-style bottom-center toolbar grouped by category.",
                            "author":  "WB Games Studio",
                            "name":  "Game Design Studio",
                            "provides":  {
@@ -378,7 +378,7 @@
                            "defaultEnabled":  false,
                            "version": "3.3.8",
                            "category":  "tools",
-                           "description":  "GrudgeDB v3. Music cue SSOT — Groups + Cues tabs, per-version Variants (stems/segments), multi-reviewer Review, References overlay. Optional: Game Design Board integration.",
+                           "description":  "GrudgeDB v3. Music cue SSOT â€” Groups + Cues tabs, per-version Variants (stems/segments), multi-reviewer Review, References overlay. Optional: Game Design Board integration.",
                            "author":  "WB Games Audio",
                            "name":  "GrudgeDB",
                            "provides":  {

@@ -6,6 +6,7 @@ import PasteOverlay from './PasteOverlay';
 import TemplatePicker from './TemplatePicker';
 import {
   DEFAULT_GAME_DESIGN_PROJECT_ID,
+  GAME_DESIGN_NODE_TYPE_COLORS,
   GAME_DESIGN_NODE_TYPE_LABELS,
   GAME_DESIGN_NODE_TYPES,
 } from '../../platform/gameDesignDefaults';
@@ -931,19 +932,13 @@ export default function GameDesignBoardView() {
       const pos = (n.x != null && n.y != null)
         ? { x: n.x, y: n.y }
         : (positions[i] || { x: base.x + i * COL_W, y: base.y });
-      const _created = createNode({
+      return createNode({
         type: n.type || 'mechanic',
         x: pos.x,
         y: pos.y,
         title: n.title || 'AI Node',
         description: n.description || '',
-        meta: n.meta && typeof n.meta === 'object' ? n.meta : null,
       });
-      // createNode runs cleanNodeType() which rejects any type not in the EXE-bundled
-      // GAME_DESIGN_NODE_TYPES list (audioPlayer is an extension-defined type added after
-      // the last EXE build). Restore the original type here so it survives to the renderer.
-      if (n.type === 'audioPlayer') _created.type = 'audioPlayer';
-      return _created;
     });
     const nodeIds = newNodes.map((n) => n.id);
     const newEdges = patchEdges
@@ -1156,6 +1151,33 @@ export default function GameDesignBoardView() {
     }));
     setPendingEdgeSource(null);
   }, [applyBoardMutation, board.edges, board.nodes, pendingEdgeSource, setPasteToast]);
+
+  const updateEdge = useCallback((edgeId, patch) => {
+    applyBoardMutation((prev) => ({
+      ...prev,
+      edges: prev.edges.map((edge) => edge.id === edgeId ? { ...edge, ...patch } : edge),
+    }));
+  }, [applyBoardMutation]);
+
+  const deleteEdge = useCallback((edgeId) => {
+    applyBoardMutation((prev) => ({
+      ...prev,
+      edges: prev.edges.filter((edge) => edge.id !== edgeId),
+    }));
+  }, [applyBoardMutation]);
+
+  const saveBoardSnapshot = useCallback(() => {
+    try {
+      const key = `gdSnapshots_${projectId}`;
+      const existing = JSON.parse(localStorage.getItem(key) || '[]');
+      const snapshots = Array.isArray(existing) ? existing : [];
+      snapshots.unshift({ ts: Date.now(), revision: board.revision || 0, nodeCount: (board.nodes || []).length });
+      localStorage.setItem(key, JSON.stringify(snapshots.slice(0, 8)));
+      setPasteToast('Snapshot saved ◷');
+    } catch {
+      setPasteToast('Snapshot save failed', 'error');
+    }
+  }, [board, projectId, setPasteToast]);
 
   const openLink = useCallback(async (url) => {
     const api = getApi();
@@ -1779,6 +1801,7 @@ export default function GameDesignBoardView() {
           drawTool={drawTool}
           drawColor={drawColor}
           drawWidth={drawWidth}
+          boardTitle={projectId}
           onAddDrawingStroke={addDrawingStroke}
           onEraseAtPoint={eraseAtPoint}
           onPlacementConsumed={() => setPlacementType('')}
@@ -1786,6 +1809,8 @@ export default function GameDesignBoardView() {
           onMoveNode={moveNode}
           onResizeNode={resizeNode}
           onUpdateNode={updateNode}
+          onUpdateEdge={updateEdge}
+          onDeleteEdge={deleteEdge}
           onSelectNode={selectSingleNode}
           onStartEdge={setPendingEdgeSource}
           onCompleteEdge={completeEdge}
@@ -1803,6 +1828,7 @@ export default function GameDesignBoardView() {
           onExportSelectedCsv={exportSelectedAsCsv}
           onExportBoard={exportBoardAsText}
           onExportBoardCsv={exportBoardAsCsv}
+          onSaveBoardSnapshot={saveBoardSnapshot}
         />
         {loading && (
           <div className="absolute top-3 left-3 z-30 flex items-center gap-2 rounded-lg border border-slate-600 bg-slate-900/95 px-2 py-1 text-[11px] text-slate-200">
@@ -1873,20 +1899,6 @@ export default function GameDesignBoardView() {
             className={`px-2 py-1 text-[11px] rounded ${toolMode === 'pan' ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-200'}`}
           >
             Hand
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setToolMode('select');
-              setPlacementType('sticky');
-              setDefaultAddType('sticky');
-              setDrawTool('none');
-              setPendingEdgeSource(null);
-              setSelectedNodeId(null);
-            }}
-            className={`px-2 py-1 text-[11px] rounded ${placementType === 'sticky' ? 'bg-cyan-600 text-white' : 'bg-slate-800 text-slate-200'}`}
-          >
-            Sticky
           </button>
           <button
             type="button"
@@ -1970,13 +1982,6 @@ export default function GameDesignBoardView() {
           </button>
           <button
             type="button"
-            onClick={() => addNodeAt(defaultAddType)}
-            className="px-2 py-1 text-[11px] rounded bg-slate-800 text-slate-100"
-          >
-            Quick Add
-          </button>
-          <button
-            type="button"
             onClick={() => persistBoard('manual')}
             disabled={saveState.saving || loading}
             className="px-2.5 py-1 text-[11px] rounded bg-amber-600 text-white disabled:opacity-60"
@@ -1994,33 +1999,108 @@ export default function GameDesignBoardView() {
           </span>
         </div>
 
-        <div className={`absolute left-3 top-14 z-30 w-[180px] rounded-xl border border-slate-700 bg-slate-900/90 p-2 space-y-2 ${needsLockGate ? 'pointer-events-none opacity-40' : ''}`}>
-          <div className="text-[10px] uppercase tracking-wide text-slate-400 px-1">Tools</div>
-          <div className="grid grid-cols-2 gap-1">
-            {GAME_DESIGN_NODE_TYPES.map((type) => (
-              <button
-                key={type}
-                type="button"
-                onClick={() => {
-                  setDefaultAddType(type);
-                  setPlacementType(type);
-                  setToolMode('select');
-                  setDrawTool('none');
-                }}
-                className={`px-1.5 py-1 rounded text-[10px] text-left ${
-                  placementType === type
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
-                }`}
-              >
-                {GAME_DESIGN_NODE_TYPE_LABELS[type] || type}
-              </button>
-            ))}
-          </div>
-          <div className="text-[10px] text-slate-400 px-1">
-            {placementType ? `Click canvas to place: ${GAME_DESIGN_NODE_TYPE_LABELS[placementType]}` : 'Tip: Double-click canvas to create a node'}
-          </div>
-        </div>
+        {/* ── Bottom-center node type toolbar ── */}
+        {(() => {
+          const toolbarGroups = [
+            { label: 'Strategic', types: ['pillar', 'coreLoop'] },
+            { label: 'Design',    types: ['mechanic', 'system', 'progression', 'economy'] },
+            { label: 'Content',   types: ['questContent', 'missionCard'] },
+            { label: 'Notes/QA', types: ['playtestFinding', 'risk', 'sticky'] },
+            { label: 'Media',     types: ['audioPlayer', 'videoPlayer', 'imageNode'] },
+          ];
+          const NODE_TYPE_ICON_PATHS = {
+            pillar:          '<rect x="4" y="3" width="12" height="2" rx="1" fill="currentColor"/><rect x="4" y="15" width="12" height="2" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="12.5" y="5" width="2" height="10" rx="1" fill="currentColor"/>',
+            coreLoop:        '<path d="M14 4a7 7 0 1 0 2 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><polyline points="13,2 14,6 18,4" fill="currentColor"/>',
+            mechanic:        '<circle cx="10" cy="10" r="2.8" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="10" r="6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2.2 2"/>',
+            system:          '<circle cx="10" cy="4" r="2" fill="currentColor"/><circle cx="4" cy="15" r="2" fill="currentColor"/><circle cx="16" cy="15" r="2" fill="currentColor"/><line x1="10" y1="6" x2="4" y2="13" stroke="currentColor" stroke-width="1.5"/><line x1="10" y1="6" x2="16" y2="13" stroke="currentColor" stroke-width="1.5"/><line x1="4" y1="15" x2="16" y2="15" stroke="currentColor" stroke-width="1.5"/>',
+            progression:     '<rect x="2" y="14" width="4" height="3" rx="1" fill="currentColor"/><rect x="8" y="10" width="4" height="7" rx="1" fill="currentColor"/><rect x="14" y="6" width="4" height="11" rx="1" fill="currentColor"/>',
+            economy:         '<circle cx="8" cy="10" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="10" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/>',
+            questContent:    '<path d="M7 3 Q6 10 7 17 Q10 19 13 17 Q14 10 13 3 Q10 1 7 3Z" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="8.5" y1="7" x2="11.5" y2="7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="8.5" y1="10" x2="11.5" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+            missionCard:     '<circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="10" y1="3" x2="10" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="10" y1="14" x2="10" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="10" x2="6" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="14" y1="10" x2="17" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+            playtestFinding: '<circle cx="9" cy="9" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="13" y1="13" x2="17" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+            risk:            '<path d="M10 3L18 16H2Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><line x1="10" y1="8.5" x2="10" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="14.5" r="1" fill="currentColor"/>',
+            sticky:          '<path d="M3 3h14v10l-4 4H3Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M13 17v-4h4" fill="none" stroke="currentColor" stroke-width="1.5"/>',
+            audioPlayer:     '<path d="M4 7h4l5 4V3L8 7H4v6h4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M16 7q2 3 0 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+            videoPlayer:     '<rect x="2" y="5" width="11" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M13 8l5-2v8l-5-2z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>',
+            imageNode:       '<rect x="2" y="4" width="16" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="7" cy="8" r="1.5" fill="currentColor"/><path d="M2 13l5-4 4 4 3-3 4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>',
+          };
+          return (
+            <div
+              className={`absolute z-30 ${needsLockGate ? 'pointer-events-none opacity-40' : ''}`}
+              style={{ bottom: '36px', left: '50%', transform: 'translateX(-50%)' }}
+            >
+              <div style={{ background: 'rgba(10,14,28,0.92)', backdropFilter: 'blur(10px)', border: '1px solid rgba(100,116,139,0.38)', borderRadius: '14px', boxShadow: '0 4px 24px rgba(0,0,0,0.55)', padding: '6px 8px 4px' }}>
+                <div style={{ display: 'flex', alignItems: 'stretch', gap: '2px' }}>
+                  {toolbarGroups.map((group, gIdx) => (
+                    <React.Fragment key={group.label}>
+                      {gIdx > 0 && <div style={{ width: '1px', background: 'rgba(100,116,139,0.3)', margin: '2px 4px' }} />}
+                      <div style={{ display: 'flex', gap: '2px' }}>
+                        {group.types.map((type) => {
+                          const color = GAME_DESIGN_NODE_TYPE_COLORS[type] || '#64748b';
+                          const isActive = placementType === type;
+                          const iconPaths = NODE_TYPE_ICON_PATHS[type];
+                          return (
+                            <button
+                              key={type}
+                              type="button"
+                              title={GAME_DESIGN_NODE_TYPE_LABELS[type] || type}
+                              onClick={() => {
+                                if (placementType === type) {
+                                  setPlacementType('');
+                                } else {
+                                  setDefaultAddType(type);
+                                  setPlacementType(type);
+                                  setToolMode('select');
+                                  setDrawTool('none');
+                                }
+                              }}
+                              style={{
+                                width: '46px', height: '50px',
+                                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px',
+                                borderRadius: '10px', cursor: 'pointer',
+                                background: isActive ? `${color}22` : 'transparent',
+                                border: isActive ? `1px solid ${color}55` : '1px solid transparent',
+                                transition: 'all 120ms',
+                                position: 'relative',
+                              }}
+                              onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = 'rgba(100,116,139,0.15)'; }}
+                              onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
+                            >
+                              {isActive && (
+                                <div style={{ position: 'absolute', bottom: '3px', left: '50%', transform: 'translateX(-50%)', width: '20px', height: '2px', borderRadius: '1px', background: color }} />
+                              )}
+                              {iconPaths && (
+                                <svg width="20" height="20" viewBox="0 0 20 20"
+                                  style={{ color: isActive ? color : '#94a3b8', transition: 'color 120ms' }}
+                                  dangerouslySetInnerHTML={{ __html: iconPaths }}
+                                />
+                              )}
+                              <span style={{
+                                fontFamily: 'system-ui, sans-serif',
+                                fontSize: '8px', fontWeight: 600,
+                                color: isActive ? color : '#64748b',
+                                textAlign: 'center', lineHeight: 1.1,
+                                maxWidth: '44px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis',
+                                transition: 'color 120ms',
+                              }}>
+                                {GAME_DESIGN_NODE_TYPE_LABELS[type] || type}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </React.Fragment>
+                  ))}
+                </div>
+                <div style={{ textAlign: 'center', marginTop: '2px', fontFamily: 'system-ui, sans-serif', fontSize: '9px', color: '#475569', minHeight: '13px' }}>
+                  {placementType
+                    ? `Click canvas to place: ${GAME_DESIGN_NODE_TYPE_LABELS[placementType] || placementType}`
+                    : 'Select a node type, then click the canvas'}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
         <button
           type="button"
