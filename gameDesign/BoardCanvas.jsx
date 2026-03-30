@@ -232,20 +232,21 @@ function getBfsNeighbors(nodeId, edges, radius) {
 }
 
 // Orthogonal S-curve path between two points
-function orthoSvgPath(p1x, p1y, p2x, p2y, exitSide, r) {
+function orthoSvgPath(p1x, p1y, p2x, p2y, exitSide, r, elbowFrac = 0.5) {
+  const frac = Math.max(0.05, Math.min(0.95, elbowFrac));
   const dx = p2x - p1x, dy = p2y - p1y;
   const adx = Math.abs(dx), ady = Math.abs(dy);
   if (adx < 1 && ady < 1) return `M ${p1x} ${p1y} L ${p2x} ${p2y}`;
   if (exitSide === 'right' || exitSide === 'left') {
     if (ady < 2) return `M ${p1x} ${p1y} H ${p2x}`;
-    const midX = (p1x + p2x) / 2;
+    const midX = p1x + (p2x - p1x) * frac;
     const cr = Math.min(r, ady / 2, Math.abs(midX - p1x), Math.abs(p2x - midX));
     if (cr < 1) return `M ${p1x} ${p1y} H ${midX} V ${p2y} H ${p2x}`;
     const xs1 = midX > p1x ? 1 : -1, xs2 = p2x > midX ? 1 : -1, ys = dy > 0 ? 1 : -1;
     return [`M ${p1x} ${p1y}`, `H ${midX - xs1 * cr}`, `Q ${midX} ${p1y} ${midX} ${p1y + ys * cr}`, `V ${p2y - ys * cr}`, `Q ${midX} ${p2y} ${midX + xs2 * cr} ${p2y}`, `H ${p2x}`].join(' ');
   } else {
     if (adx < 2) return `M ${p1x} ${p1y} V ${p2y}`;
-    const midY = (p1y + p2y) / 2;
+    const midY = p1y + (p2y - p1y) * frac;
     const cr = Math.min(r, adx / 2, Math.abs(midY - p1y), Math.abs(p2y - midY));
     if (cr < 1) return `M ${p1x} ${p1y} V ${midY} H ${p2x} V ${p2y}`;
     const ys1 = midY > p1y ? 1 : -1, ys2 = p2y > midY ? 1 : -1, xs = dx > 0 ? 1 : -1;
@@ -406,9 +407,14 @@ export default function BoardCanvas({
   const [commentDraft, setCommentDraft] = useState('');
 
   // Edge interactions
-  const [hoveredEdgeId, setHoveredEdgeId]   = useState(null);
-  const [editingEdgeId, setEditingEdgeId]   = useState(null);
+  const [hoveredEdgeId,  setHoveredEdgeId]  = useState(null);
+  const [editingEdgeId,  setEditingEdgeId]  = useState(null);
   const [edgeLabelDraft, setEdgeLabelDraft] = useState('');
+  const [selectedEdgeId, setSelectedEdgeId] = useState(null);
+  // Edge dragging (elbow reshape + endpoint reconnect)
+  const edgeDragRef   = useRef(null);    // { edgeId, mode:'elbow'|'source'|'target', exitSide, srcPX, srcPY, tgtPX, tgtPY }
+  const [edgeDragPos, setEdgeDragPos] = useState(null); // board-space cursor during edge drag
+  const onUpdateEdgeRef = useRef(onUpdateEdge);
 
   // Drag-to-connect state
   const dragConnectRef  = useRef(null);          // { sourceNodeId, hasMoved } – for global handlers
@@ -491,14 +497,21 @@ export default function BoardCanvas({
       const tcx = tgt.x + tw / 2 + CANVAS_CENTER, tcy = tgt.y + th / 2 + CANVAS_CENTER;
       const srcPort = getNearestPort(scx, scy, sw / 2, sh / 2, tcx, tcy);
       const tgtPort = getNearestPort(tcx, tcy, tw / 2, th / 2, scx, scy);
-      const pathD = orthoSvgPath(srcPort.x, srcPort.y, tgtPort.x, tgtPort.y, srcPort.side, 10);
+      const elbowFrac = edge.elbowFrac != null ? edge.elbowFrac : 0.5;
+      const pathD = orthoSvgPath(srcPort.x, srcPort.y, tgtPort.x, tgtPort.y, srcPort.side, 10, elbowFrac);
       const midpoint = getEdgeMidpoint(srcPort.x, srcPort.y, tgtPort.x, tgtPort.y);
+      // Elbow point position for the drag handle
+      const isH = srcPort.side === 'right' || srcPort.side === 'left';
+      const elbowX = isH ? srcPort.x + (tgtPort.x - srcPort.x) * elbowFrac : (srcPort.x + tgtPort.x) / 2;
+      const elbowY = isH ? (srcPort.y + tgtPort.y) / 2 : srcPort.y + (tgtPort.y - srcPort.y) * elbowFrac;
       return {
         id: edge.id, pathD, midpoint,
         relationType: edge.relationType || 'supports',
         isTwoWay: TWO_WAY_TYPES.has(edge.relationType),
         label: edge.label || '',
         sourceId: edge.source, targetId: edge.target,
+        elbowFrac, srcPort, tgtPort, exitSide: srcPort.side,
+        elbowX, elbowY,
       };
     }).filter(Boolean);
   }, [edges, nodeMap]);
@@ -644,6 +657,7 @@ export default function BoardCanvas({
   useEffect(() => { onStartEdgeRef.current    = onStartEdge; },    [onStartEdge]);
   useEffect(() => { onCompleteEdgeRef.current = onCompleteEdge; }, [onCompleteEdge]);
   useEffect(() => { onCancelEdgeRef.current   = onCancelEdge; },   [onCancelEdge]);
+  useEffect(() => { onUpdateEdgeRef.current   = onUpdateEdge; },   [onUpdateEdge]);
 
   // Focus on specific node (from AI patch)
   useEffect(() => {
@@ -708,6 +722,24 @@ export default function BoardCanvas({
     const onMove = (e) => {
       const pt = toBoardPoint(e.clientX, e.clientY);
       setCursorBoardPos(pt);
+      // Edge elbow/endpoint drag
+      if (edgeDragRef.current) {
+        setEdgeDragPos(pt);
+        const { mode, edgeId, exitSide, srcPX, srcPY, tgtPX, tgtPY } = edgeDragRef.current;
+        if (mode === 'elbow') {
+          const isH = exitSide === 'right' || exitSide === 'left';
+          let frac;
+          if (isH) {
+            const span = tgtPX - srcPX;
+            frac = Math.abs(span) < 1 ? 0.5 : Math.max(0.05, Math.min(0.95, (pt.x - srcPX) / span));
+          } else {
+            const span = tgtPY - srcPY;
+            frac = Math.abs(span) < 1 ? 0.5 : Math.max(0.05, Math.min(0.95, (pt.y - srcPY) / span));
+          }
+          onUpdateEdgeRef.current?.(edgeId, { elbowFrac: frac });
+        }
+        return;
+      }
       // Drag-to-connect: update ghost line cursor position
       if (dragConnectRef.current) {
         dragConnectRef.current.hasMoved = true;
@@ -764,6 +796,23 @@ export default function BoardCanvas({
     };
 
     const onUp = (e) => {
+      // Edge endpoint reconnect
+      if (edgeDragRef.current) {
+        const { edgeId, mode } = edgeDragRef.current;
+        edgeDragRef.current = null;
+        setEdgeDragPos(null);
+        if (mode === 'source' || mode === 'target') {
+          let el = document.elementFromPoint(e.clientX, e.clientY);
+          while (el && !el.getAttribute?.('data-node-id')) el = el?.parentElement;
+          const newNodeId = el?.getAttribute?.('data-node-id');
+          if (newNodeId) {
+            const existingEdges = nodesRef.current ? null : null; // edges accessed via closure
+            onUpdateEdgeRef.current?.(edgeId, { [mode]: newNodeId });
+          }
+        }
+        // elbow mode: already updated live in onMove, nothing more to do
+        return;
+      }
       // Drag-to-connect: complete or cancel
       if (dragConnectRef.current) {
         const { sourceNodeId, hasMoved } = dragConnectRef.current;
@@ -900,6 +949,7 @@ export default function BoardCanvas({
       onAddNodeAt?.(placementType, boardPt); onPlacementConsumed?.(); return;
     }
     onSelectNode?.(null);
+    setSelectedEdgeId(null);
     if (commentingNodeId) setCommentingNodeId(null);
   };
 
@@ -1229,8 +1279,13 @@ export default function BoardCanvas({
                     onMouseLeave={() => setHoveredEdgeId(null)}
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (editingEdgeId === edge.id) { setEditingEdgeId(null); setEdgeLabelDraft(''); }
-                      else { setEditingEdgeId(edge.id); setEdgeLabelDraft(edge.label || ''); }
+                      if (editingEdgeId === edge.id) return; // label editor open, don't interfere
+                      setSelectedEdgeId(prev => prev === edge.id ? null : edge.id);
+                    }}
+                    onDoubleClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedEdgeId(edge.id);
+                      setEditingEdgeId(edge.id); setEdgeLabelDraft(edge.label || '');
                     }}
                     onContextMenu={(e) => {
                       e.preventDefault();
@@ -1250,6 +1305,45 @@ export default function BoardCanvas({
                     markerStart={edge.isTwoWay ? `url(#gd-arrow-start-${typeKey})` : undefined}
                     style={{ pointerEvents: 'none', transition: 'stroke-width 120ms, stroke-opacity 120ms' }}
                   />
+                  {/* Selection handles (source endpoint, elbow, target endpoint) */}
+                  {selectedEdgeId === edge.id && editingEdgeId !== edge.id && (
+                    <g style={{ pointerEvents: 'all' }}>
+                      {/* Source endpoint — drag to reconnect */}
+                      <circle cx={edge.srcPort.x} cy={edge.srcPort.y} r={6} fill="#818cf8" stroke="#c7d2fe" strokeWidth={1.5}
+                        style={{ cursor: 'grab' }}
+                        onMouseDown={(e) => {
+                          e.stopPropagation(); e.preventDefault();
+                          edgeDragRef.current = { edgeId: edge.id, mode: 'source' };
+                          setEdgeDragPos(toBoardPoint(e.clientX, e.clientY));
+                        }}
+                      />
+                      {/* Elbow drag handle (diamond) */}
+                      <rect x={edge.elbowX - 6} y={edge.elbowY - 6} width={12} height={12}
+                        fill="#6366f1" stroke="#a5b4fc" strokeWidth={1.5}
+                        transform={`rotate(45 ${edge.elbowX} ${edge.elbowY})`}
+                        style={{ cursor: 'ew-resize' }}
+                        onMouseDown={(e) => {
+                          e.stopPropagation(); e.preventDefault();
+                          edgeDragRef.current = {
+                            edgeId: edge.id, mode: 'elbow',
+                            exitSide: edge.exitSide,
+                            srcPX: edge.srcPort.x - CANVAS_CENTER, srcPY: edge.srcPort.y - CANVAS_CENTER,
+                            tgtPX: edge.tgtPort.x - CANVAS_CENTER, tgtPY: edge.tgtPort.y - CANVAS_CENTER,
+                          };
+                          setEdgeDragPos(toBoardPoint(e.clientX, e.clientY));
+                        }}
+                      />
+                      {/* Target endpoint — drag to reconnect */}
+                      <circle cx={edge.tgtPort.x} cy={edge.tgtPort.y} r={6} fill="#34d399" stroke="#a7f3d0" strokeWidth={1.5}
+                        style={{ cursor: 'grab' }}
+                        onMouseDown={(e) => {
+                          e.stopPropagation(); e.preventDefault();
+                          edgeDragRef.current = { edgeId: edge.id, mode: 'target' };
+                          setEdgeDragPos(toBoardPoint(e.clientX, e.clientY));
+                        }}
+                      />
+                    </g>
+                  )}
                   {/* Edge label */}
                   {edge.label && editingEdgeId !== edge.id && (
                     <g style={{ pointerEvents: 'none' }}>
@@ -1262,6 +1356,25 @@ export default function BoardCanvas({
                 </g>
               );
             })}
+
+            {/* Edge endpoint drag ghost line */}
+            {edgeDragRef.current && edgeDragPos && (() => {
+              const d = edgeDragRef.current;
+              if (d.mode !== 'source' && d.mode !== 'target') return null;
+              const edgeLine = edgeLines.find(el => el.id === d.edgeId);
+              if (!edgeLine) return null;
+              const fixedPort = d.mode === 'source' ? edgeLine.tgtPort : edgeLine.srcPort;
+              const curX = edgeDragPos.x + CANVAS_CENTER, curY = edgeDragPos.y + CANVAS_CENTER;
+              const ghostPath = d.mode === 'source'
+                ? orthoSvgPath(curX, curY, fixedPort.x, fixedPort.y, 'right', 10)
+                : orthoSvgPath(fixedPort.x, fixedPort.y, curX, curY, fixedPort.side, 10);
+              return (
+                <g style={{ pointerEvents: 'none' }}>
+                  <path d={ghostPath} fill="none" stroke="#34d399" strokeWidth="2" strokeDasharray="8 4" strokeOpacity={0.8} />
+                  <circle cx={curX} cy={curY} r={6} fill="#34d399" fillOpacity={0.3} stroke="#6ee7b7" strokeWidth={1.5} />
+                </g>
+              );
+            })()}
 
             {/* Drag-to-connect ghost line */}
             {dragConnectInfo && dragConnectPos && (() => {
