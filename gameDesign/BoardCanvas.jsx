@@ -918,6 +918,10 @@ export default function BoardCanvas({
 
   const handleBackgroundMouseDown = (e) => {
     if (e.button !== 0 && e.button !== 1) return;
+    if (edgeDragRef.current) return;   // edge handle drag already claimed this mousedown
+    if (dragConnectRef.current) return; // port drag already claimed this mousedown
+    if (e.target?.dataset?.portDot === 'true') return;   // port dot — don't start lasso
+    if (e.target?.dataset?.edgeHandle === 'true') return; // edge handle — don't start lasso
     if (e.target?.dataset?.nodeCard === 'true') return;
     if (e.button === 0 && isDrawMode) {
       const pt = toBoardPoint(e.clientX, e.clientY);
@@ -1305,44 +1309,9 @@ export default function BoardCanvas({
                     markerStart={edge.isTwoWay ? `url(#gd-arrow-start-${typeKey})` : undefined}
                     style={{ pointerEvents: 'none', transition: 'stroke-width 120ms, stroke-opacity 120ms' }}
                   />
-                  {/* Selection handles (source endpoint, elbow, target endpoint) */}
-                  {selectedEdgeId === edge.id && editingEdgeId !== edge.id && (
-                    <g style={{ pointerEvents: 'all' }}>
-                      {/* Source endpoint — drag to reconnect */}
-                      <circle cx={edge.srcPort.x} cy={edge.srcPort.y} r={6} fill="#818cf8" stroke="#c7d2fe" strokeWidth={1.5}
-                        style={{ cursor: 'grab' }}
-                        onMouseDown={(e) => {
-                          e.stopPropagation(); e.preventDefault();
-                          edgeDragRef.current = { edgeId: edge.id, mode: 'source' };
-                          setEdgeDragPos(toBoardPoint(e.clientX, e.clientY));
-                        }}
-                      />
-                      {/* Elbow drag handle (diamond) */}
-                      <rect x={edge.elbowX - 6} y={edge.elbowY - 6} width={12} height={12}
-                        fill="#6366f1" stroke="#a5b4fc" strokeWidth={1.5}
-                        transform={`rotate(45 ${edge.elbowX} ${edge.elbowY})`}
-                        style={{ cursor: 'ew-resize' }}
-                        onMouseDown={(e) => {
-                          e.stopPropagation(); e.preventDefault();
-                          edgeDragRef.current = {
-                            edgeId: edge.id, mode: 'elbow',
-                            exitSide: edge.exitSide,
-                            srcPX: edge.srcPort.x - CANVAS_CENTER, srcPY: edge.srcPort.y - CANVAS_CENTER,
-                            tgtPX: edge.tgtPort.x - CANVAS_CENTER, tgtPY: edge.tgtPort.y - CANVAS_CENTER,
-                          };
-                          setEdgeDragPos(toBoardPoint(e.clientX, e.clientY));
-                        }}
-                      />
-                      {/* Target endpoint — drag to reconnect */}
-                      <circle cx={edge.tgtPort.x} cy={edge.tgtPort.y} r={6} fill="#34d399" stroke="#a7f3d0" strokeWidth={1.5}
-                        style={{ cursor: 'grab' }}
-                        onMouseDown={(e) => {
-                          e.stopPropagation(); e.preventDefault();
-                          edgeDragRef.current = { edgeId: edge.id, mode: 'target' };
-                          setEdgeDragPos(toBoardPoint(e.clientX, e.clientY));
-                        }}
-                      />
-                    </g>
+                  {/* Selected edge highlight glow */}
+                  {selectedEdgeId === edge.id && (
+                    <path d={edge.pathD} fill="none" stroke={edgeColor} strokeWidth={sw + 8} strokeOpacity={0.18} style={{ pointerEvents: 'none' }} />
                   )}
                   {/* Edge label */}
                   {edge.label && editingEdgeId !== edge.id && (
@@ -1407,6 +1376,67 @@ export default function BoardCanvas({
               return <path d={d} fill="none" stroke={draftStroke.color || '#60a5fa'} strokeOpacity={Number.isFinite(draftStroke.opacity) ? draftStroke.opacity : 0.9} strokeWidth={Math.max(1, Number(draftStroke.width) || 3)} strokeLinecap="round" strokeLinejoin="round" />;
             })()}
           </svg>
+
+          {/* ── Edge drag handles (DOM overlay — reliable pointer events regardless of SVG pointer-events:none) ── */}
+          {selectedEdgeId && editingEdgeId !== selectedEdgeId && (() => {
+            const el = edgeLines.find(e => e.id === selectedEdgeId);
+            if (!el) return null;
+            // Convert SVG canvas coordinates → viewport pixel coordinates
+            const vp = (svgX, svgY) => ({
+              x: svgX * view.scale + view.x,
+              y: svgY * view.scale + view.y,
+            });
+            const src   = vp(el.srcPort.x, el.srcPort.y);
+            const tgt   = vp(el.tgtPort.x, el.tgtPort.y);
+            const elbow = vp(el.elbowX,    el.elbowY);
+            const BASE = { position: 'absolute', zIndex: 35, transform: 'translate(-50%,-50%)', userSelect: 'none' };
+            return (
+              <>
+                {/* Source endpoint handle */}
+                <div data-edge-handle="true"
+                  style={{ ...BASE, left: src.x, top: src.y, width: 14, height: 14, borderRadius: '50%',
+                    background: '#818cf8', border: '2px solid #c7d2fe',
+                    boxShadow: '0 0 0 3px rgba(129,140,248,0.35)', cursor: 'grab' }}
+                  title="Drag to reconnect source"
+                  onMouseDown={(e) => {
+                    e.stopPropagation(); e.preventDefault();
+                    edgeDragRef.current = { edgeId: selectedEdgeId, mode: 'source' };
+                    setEdgeDragPos(toBoardPoint(e.clientX, e.clientY));
+                  }}
+                />
+                {/* Elbow reshape handle (diamond) */}
+                <div data-edge-handle="true"
+                  style={{ ...BASE, left: elbow.x, top: elbow.y, width: 12, height: 12, borderRadius: '2px',
+                    background: '#6366f1', border: '2px solid #a5b4fc',
+                    boxShadow: '0 0 0 3px rgba(99,102,241,0.35)', cursor: 'ew-resize',
+                    transform: 'translate(-50%,-50%) rotate(45deg)' }}
+                  title="Drag to reshape line"
+                  onMouseDown={(e) => {
+                    e.stopPropagation(); e.preventDefault();
+                    edgeDragRef.current = {
+                      edgeId: selectedEdgeId, mode: 'elbow',
+                      exitSide: el.exitSide,
+                      srcPX: el.srcPort.x - CANVAS_CENTER, srcPY: el.srcPort.y - CANVAS_CENTER,
+                      tgtPX: el.tgtPort.x - CANVAS_CENTER, tgtPY: el.tgtPort.y - CANVAS_CENTER,
+                    };
+                    setEdgeDragPos(toBoardPoint(e.clientX, e.clientY));
+                  }}
+                />
+                {/* Target endpoint handle */}
+                <div data-edge-handle="true"
+                  style={{ ...BASE, left: tgt.x, top: tgt.y, width: 14, height: 14, borderRadius: '50%',
+                    background: '#34d399', border: '2px solid #a7f3d0',
+                    boxShadow: '0 0 0 3px rgba(52,211,153,0.35)', cursor: 'grab' }}
+                  title="Drag to reconnect target"
+                  onMouseDown={(e) => {
+                    e.stopPropagation(); e.preventDefault();
+                    edgeDragRef.current = { edgeId: selectedEdgeId, mode: 'target' };
+                    setEdgeDragPos(toBoardPoint(e.clientX, e.clientY));
+                  }}
+                />
+              </>
+            );
+          })()}
 
           {/* Lasso selection rect */}
           {lassoRect && (
@@ -1609,6 +1639,7 @@ export default function BoardCanvas({
                     <div key={portId}
                       title={isTarget ? 'Drop here to connect' : 'Drag to draw a connection'}
                       data-port-dot="true"
+                      data-edge-handle="true"
                       onMouseDown={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
