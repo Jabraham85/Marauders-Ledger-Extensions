@@ -1111,8 +1111,8 @@ export default function BoardCanvas({
         </div>
       )}
 
-      {/* Edge legend (top-left, collapsible) */}
-      <div className="absolute z-20 select-none" style={{ top: '8px', left: '8px' }} onMouseDown={e => e.stopPropagation()}>
+      {/* Edge legend (bottom-left, above toolbar) */}
+      <div className="absolute z-20 select-none" style={{ bottom: '100px', left: '8px' }} onMouseDown={e => e.stopPropagation()}>
         <button type="button" onClick={() => setLegendOpen(s => !s)}
           className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg"
           style={{ background: 'rgba(10,14,28,0.8)', border: '1px solid rgba(100,116,139,0.35)', fontFamily: 'system-ui, sans-serif', fontSize: '10px', color: '#64748b' }}
@@ -1120,7 +1120,7 @@ export default function BoardCanvas({
           <span>Connections</span><span style={{ fontSize: '8px' }}>{legendOpen ? '▲' : '▼'}</span>
         </button>
         {legendOpen && (
-          <div className="absolute top-8 left-0 p-2.5 rounded-lg" style={{ background: 'rgba(10,14,28,0.95)', backdropFilter: 'blur(8px)', border: '1px solid rgba(100,116,139,0.4)', minWidth: '148px' }}>
+          <div className="absolute bottom-8 left-0 p-2.5 rounded-lg" style={{ background: 'rgba(10,14,28,0.95)', backdropFilter: 'blur(8px)', border: '1px solid rgba(100,116,139,0.4)', minWidth: '148px' }}>
             {EDGE_LEGEND.map(({ type, label }) => (
               <div key={type} className="flex items-center gap-2 py-0.5">
                 <svg width="28" height="10" style={{ flexShrink: 0 }}>
@@ -1486,13 +1486,16 @@ export default function BoardCanvas({
                   />
                 ))}
 
-                {/* 8-port connection dots */}
+                {/* 8-port connection dots — drag from any dot to create an edge */}
                 {PORT_DOT_STYLES.map(({ id: portId, style: portStyle }) => {
-                  const isTarget = pendingEdgeSource !== null && pendingEdgeSource !== node.id;
+                  const isTarget  = pendingEdgeSource !== null && pendingEdgeSource !== node.id;
                   const isDragging = dragConnectInfo !== null;
+                  const dotColor  = isTarget ? '#10b981' : '#6366f1';
+                  const dotBorder = isTarget ? '#6ee7b7' : '#a5b4fc';
                   return (
-                    <button key={portId} type="button"
-                      title={isTarget ? 'Connect here' : 'Drag to connect'}
+                    <div key={portId}
+                      title={isTarget ? 'Drop here to connect' : 'Drag to draw a connection'}
+                      data-port-dot="true"
                       onMouseDown={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
@@ -1506,15 +1509,19 @@ export default function BoardCanvas({
                       }}
                       style={{
                         position: 'absolute', ...portStyle,
-                        zIndex: 20, width: 12, height: 12, borderRadius: '50%',
-                        background: isTarget || isDragging ? '#10b981' : '#6366f1',
-                        border: `1.5px solid ${isTarget || isDragging ? '#6ee7b7' : '#a5b4fc'}`,
-                        boxShadow: `0 0 0 3px ${isTarget || isDragging ? 'rgba(16,185,129,0.3)' : 'rgba(99,102,241,0.3)'}`,
-                        opacity: isTarget ? 1 : 0,
-                        transition: 'opacity 150ms, background 100ms',
+                        zIndex: 25, width: 14, height: 14, borderRadius: '50%',
+                        background: dotColor,
+                        border: `2px solid ${dotBorder}`,
+                        boxShadow: `0 0 0 3px ${isTarget ? 'rgba(16,185,129,0.35)' : 'rgba(99,102,241,0.35)'}`,
+                        /* rest state: dim but visible so user knows the handles exist */
+                        opacity: isTarget ? 1 : 0.25,
+                        transition: 'opacity 120ms, transform 120ms, background 100ms',
                         cursor: 'crosshair',
+                        userSelect: 'none',
+                        /* scale up slightly on hover (CSS hover handled below) */
                       }}
-                      className="group-hover:opacity-100"
+                      onMouseEnter={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1.3)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.opacity = isTarget ? '1' : '0.25'; e.currentTarget.style.transform = 'scale(1)'; }}
                     />
                   );
                 })}

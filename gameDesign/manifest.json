@@ -1,7 +1,7 @@
 {
     "id":  "gameDesign",
     "defaultEnabled":  true,
-    "version": "2.2.0",
+    "version": "2.3.0",
     "category":  "views",
     "description":  "Game Design Board v2.2: Drag-to-connect (drag from any port dot to target node for instant edge), right-click edge to pick connection type or delete, Connections legend repositioned top-left. Plus v2.1: 8-port system, videoPlayer/imageNode types, SVG icons, bottom toolbar.",
     "author":  "WB Games Studio",
