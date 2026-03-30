@@ -1,0 +1,477 @@
+{
+    "extensions":  [
+                       {
+                           "id":  "calendar",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\calendar",
+                           "defaultEnabled":  false,
+                           "version":  "1.0.0",
+                           "category":  "views",
+                           "description":  "Week/day/month calendar view synced with Outlook events and task deadlines.",
+                           "author":  "WB Games Studio",
+                           "name":  "Calendar",
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\calendar\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "calendar"
+                       },
+                       {
+                           "id":  "allTasks",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\allTasks",
+                           "defaultEnabled":  false,
+                           "version":  "1.0.0",
+                           "category":  "views",
+                           "description":  "Cross-department table view of every task with sorting and filtering.",
+                           "author":  "WB Games Studio",
+                           "name":  "All Tasks Table",
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\allTasks\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "table"
+                       },
+                       {
+                           "id":  "activity",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\activity",
+                           "defaultEnabled":  false,
+                           "version":  "1.0.0",
+                           "category":  "views",
+                           "description":  "Chronological feed of all task, department, and note changes.",
+                           "author":  "WB Games Studio",
+                           "name":  "Activity Feed",
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\activity\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "activity"
+                       },
+                       {
+                           "id":  "gameDesign",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\gameDesign",
+                           "defaultEnabled":  true,
+                           "version":  "1.8.0",
+                           "category":  "views",
+                           "description":  "Narrative Design Board with full Mission Kernel system (NPCs, Locations, Systems, DAS, House Points, Choice Impacts, Branching Endings, World State, Rumors). AI-powered mission generation via /mission command. Board patches from AI Chat via /board command. Paste board-patch JSON directly onto canvas. Right-click export (text/CSV) per node, multi-select, or whole board. Image/video attach in Inspector.",
+                           "author":  "WB Games Studio",
+                           "name":  "Game Design Studio",
+                           "provides":  {
+                                            "entries":  {
+                                                            "view":  "GameDesignBoardView.jsx"
+                                                        },
+                                            "view":  {
+                                                         "id":  "gameDesign",
+                                                         "label":  "Game Design Studio"
+                                                     }
+                                        },
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\gameDesign\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "puzzle"
+                       },
+                       {
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\slack",
+                           "id":  "slack",
+                           "category":  "integrations",
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\slack\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "name":  "Slack Integration",
+                           "description":  "Sync and search Slack messages via Tauri HTTP proxy. Provides context for AI reports.",
+                           "version":  "1.1.0",
+                           "defaultEnabled":  false,
+                           "author":  "WB Games Studio",
+                           "icon":  "chat",
+                           "provides":  {
+                                            "entries":  {
+                                                            "popover":  "SlackPopover.jsx",
+                                                            "view":  "SlackDigestView.jsx"
+                                                        },
+                                            "view":  {
+                                                         "id":  "slack",
+                                                         "label":  "Slack Digest"
+                                                     }
+                                        },
+                           "suspended":  true
+                       },
+                       {
+                           "id":  "confluence",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\confluence",
+                           "defaultEnabled":  false,
+                           "version":  "1.2.7",
+                           "category":  "integrations",
+                           "description":  "Sync and search Confluence pages via Tauri HTTP proxy. Feeds AI context and glossary.",
+                           "author":  "WB Games Studio",
+                           "name":  "Confluence Integration",
+                           "provides":  {
+                                            "entries":  {
+                                                            "popover":  "ConfluencePopover.jsx",
+                                                            "view":  "ConfluenceView.jsx"
+                                                        },
+                                            "view":  {
+                                                         "id":  "confluence",
+                                                         "label":  "Confluence"
+                                                     }
+                                        },
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\confluence\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "book"
+                       },
+                       {
+                           "id":  "outlook",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\outlook",
+                           "defaultEnabled":  false,
+                           "version":  "1.1.0",
+                           "category":  "integrations",
+                           "description":  "Schedule meetings, view calendar events, and search contacts via Outlook COM through Tauri PowerShell bridge.",
+                           "author":  "WB Games Studio",
+                           "name":  "Outlook Integration",
+                           "provides":  {
+                                            "entries":  {
+                                                            "popover":  "OutlookPopover.jsx",
+                                                            "modal":  "OutlookMeetingModal.jsx"
+                                                        }
+                                        },
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\outlook\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "mail"
+                       },
+                       {
+                           "id":  "onenote",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\onenote",
+                           "defaultEnabled":  false,
+                           "version":  "1.1.0",
+                           "category":  "integrations",
+                           "description":  "Two-way sync with Microsoft OneNote via COM through Tauri PowerShell bridge. Replaces built-in notes when active.",
+                           "author":  "WB Games Studio",
+                           "name":  "OneNote Integration",
+                           "provides":  {
+                                            "entries":  {
+                                                            "popover":  "OnenotePopover.jsx"
+                                                        }
+                                        },
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\onenote\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "notebook"
+                       },
+                       {
+                           "id":  "miro",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\miro",
+                           "defaultEnabled":  false,
+                           "version":  "1.1.0",
+                           "category":  "integrations",
+                           "description":  "Browse, embed, and edit Miro boards via Tauri HTTP proxy. Board content indexed for AI context.",
+                           "author":  "WB Games Studio",
+                           "name":  "Miro Integration",
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\miro\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "miro"
+                       },
+                       {
+                           "id":  "avalanche-jira",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\avalanche-jira",
+                           "defaultEnabled":  false,
+                           "version":  "3.4.0",
+                           "category":  "integrations",
+                           "description":  "Jira template and ticket workflow from Avalanche: fetch, list, Kanban, edit, and sync with the same field mapping as the desktop app.",
+                           "author":  "Your Name",
+                           "name":  "Jira Ticket Tool",
+                           "provides":  {
+                                            "entries":  {
+                                                            "view":  "AvalancheView.jsx",
+                                                            "service":  "service.cjs",
+                                                            "settings":  "AvalancheSettings.jsx"
+                                                        },
+                                            "view":  {
+                                                         "id":  "avalanche-jira-view",
+                                                         "label":  "Jira Ticket Tool"
+                                                     }
+                                        },
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\avalanche-jira\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "puzzle"
+                       },
+                       {
+                           "id":  "ai",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\ai",
+                           "defaultEnabled":  false,
+                           "version":  "2.9.0",
+                           "category":  "ai",
+                           "description":  "Multi-format LLM client supporting Ollama, OpenAI, and custom endpoints. RAG-aware chat with professor agent routing, extended search mode, Deep Dive, and cost estimation. Every response shows \u201CFormat as Board\u201D and \u201CFormat as Mission\u201D buttons to convert grounded answers without a separate RAG query.",
+                           "author":  "WB Games Studio",
+                           "name":  "AI Assistant",
+                           "provides":  {
+                                            "entries":  {
+                                                            "view":  "AiChatView.jsx",
+                                                            "service":  "aiLlmService.js"
+                                                        },
+                                            "view":  {
+                                                         "id":  "ai-chat",
+                                                         "label":  "AI Chat"
+                                                     }
+                                        },
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\ai\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "sparkles"
+                       },
+                       {
+                           "id":  "knowledgeSources",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\knowledgeSources",
+                           "defaultEnabled":  false,
+                           "version":  "1.0.7",
+                           "category":  "ai",
+                           "description":  "Add custom files (PDF, DOCX, Excel, CSV, TXT), URLs, or entire wiki sites to expand the AI knowledge base.",
+                           "author":  "WB Games Studio",
+                           "name":  "Knowledge Sources",
+                           "provides":  {
+                                            "entries":  {
+                                                            "settings":  "KnowledgeSourcesPanel.jsx"
+                                                        }
+                                        },
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\knowledgeSources\\manifest.json",
+                           "dependencies":  [
+                                                "ai"
+                                            ],
+                           "icon":  "book"
+                       },
+                       {
+                           "id":  "rag",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\rag",
+                           "defaultEnabled":  false,
+                           "version":  "1.6.5",
+                           "category":  "ai",
+                           "description":  "Procedural retrieval-augmented generation with BM25, classic concentric-ring mode, LLM query expansion and reranking, professor agent domain exclusions and specialty weights, Deep Dive multi-round exhaustive search with pre-flight estimate and user confirmation. Integrates into the AI Assistant when both are enabled.",
+                           "author":  "WB Games Studio",
+                           "name":  "Procedural RAG Engine",
+                           "provides":  {
+                                            "entries":  {
+                                                            "settings":  "RagView.jsx",
+                                                            "service":  "ragService.js"
+                                                        }
+                                        },
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\rag\\manifest.json",
+                           "dependencies":  [
+                                                "ai"
+                                            ],
+                           "icon":  "sparkles"
+                       },
+                       {
+                           "id":  "potterdb",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\potterdb",
+                           "defaultEnabled":  false,
+                           "version":  "1.1.0",
+                           "category":  "ai",
+                           "description":  "Syncs 5000+ characters, 300+ spells, and 160+ potions from the Wizarding World into the RAG index. Data persists across restarts \u2014 one sync is all you need.",
+                           "author":  "WB Games Studio",
+                           "name":  "Harry Potter Lore (Potter DB)",
+                           "provides":  {
+                                            "entries":  {
+                                                            "service":  "potterdbService.js"
+                                                        }
+                                        },
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\potterdb\\manifest.json",
+                           "dependencies":  [
+                                                "rag"
+                                            ],
+                           "icon":  "sparkles"
+                       },
+                       {
+                           "id":  "glossary",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\glossary",
+                           "defaultEnabled":  false,
+                           "version":  "1.0.0",
+                           "category":  "tools",
+                           "description":  "Auto-extract technical terms from Confluence for spellcheck dictionary.",
+                           "author":  "WB Games Studio",
+                           "name":  "Glossary and Spellcheck",
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\glossary\\manifest.json",
+                           "dependencies":  [
+                                                "confluence"
+                                            ],
+                           "icon":  "glossary"
+                       },
+                       {
+                           "id":  "notifications",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\notifications",
+                           "defaultEnabled":  false,
+                           "version":  "1.0.0",
+                           "category":  "tools",
+                           "description":  "Bell icon alerts for overdue and upcoming task deadlines.",
+                           "author":  "WB Games Studio",
+                           "name":  "Deadline Notifications",
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\notifications\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "bell"
+                       },
+                       {
+                           "id":  "dataBackup",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\dataBackup",
+                           "defaultEnabled":  false,
+                           "version":  "1.0.0",
+                           "category":  "tools",
+                           "description":  "Export/import all data as JSON, or export tasks as CSV.",
+                           "author":  "WB Games Studio",
+                           "name":  "Data Backup and Export",
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\dataBackup\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "download"
+                       },
+                       {
+                           "id":  "darkMode",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\darkMode",
+                           "defaultEnabled":  false,
+                           "version":  "1.2.0",
+                           "category":  "appearance",
+                           "description":  "Toggle between light and dark theme. v1.2.0 adds CSS baseline fix for guaranteed text visibility in all dark mode views.",
+                           "author":  "WB Games Studio",
+                           "name":  "Dark Mode",
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\darkMode\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "moon"
+                       },
+                       {
+                           "id":  "minesweeper",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\minesweeper",
+                           "defaultEnabled":  false,
+                           "version":  "1.0.0",
+                           "category":  "community",
+                           "description":  "Classic Minesweeper game. Take a break without leaving the Ledger.",
+                           "author":  "Studio Tools",
+                           "name":  "Minesweeper",
+                           "provides":  {
+                                            "entries":  {
+                                                            "view":  "MinesweeperView.jsx"
+                                                        },
+                                            "view":  {
+                                                         "id":  "minesweeper",
+                                                         "label":  "Minesweeper"
+                                                     }
+                                        },
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\minesweeper\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "puzzle"
+                       },
+                       {
+                           "id":  "cue-tracker",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\cue-tracker",
+                           "defaultEnabled":  false,
+                           "version": "3.3.8",
+                           "category":  "tools",
+                           "description":  "GrudgeDB v3. Music cue SSOT — Groups + Cues tabs, per-version Variants (stems/segments), multi-reviewer Review, References overlay. Optional: Game Design Board integration.",
+                           "author":  "WB Games Audio",
+                           "name":  "GrudgeDB",
+                           "provides":  {
+                                            "entries":  {
+                                                            "view":  "CueTrackerView.jsx",
+                                                            "service":  "service.cjs",
+                                                            "settings":  "CueTrackerSettings.jsx"
+                                                        },
+                                            "view":  {
+                                                         "id":  "cue-tracker",
+                                                         "label":  "GrudgeDB"
+                                                     }
+                                        },
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\cue-tracker\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "activity"
+                       },
+                       {
+                           "id":  "interop-hub",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\interop-hub",
+                           "defaultEnabled":  false,
+                           "version":  "1.1.0",
+                           "category":  "tools",
+                           "description":  "Cross-extension interoperability monitor with event stream, compatibility scan, and integration guidance.",
+                           "author":  "WB Games Studio",
+                           "name":  "Interop Hub",
+                           "provides":  {
+                                            "entries":  {
+                                                            "settings":  "InteropHubSettings.jsx",
+                                                            "view":  "InteropHubView.jsx"
+                                                        },
+                                            "view":  {
+                                                         "id":  "interop-hub",
+                                                         "label":  "Interop Hub"
+                                                     }
+                                        },
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\interop-hub\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "activity"
+                       },
+                       {
+                           "id":  "chess",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\chess",
+                           "defaultEnabled":  false,
+                           "version":  "1.3.7",
+                           "category":  "community",
+                           "description":  "Two-player chess with live challenges, timed and casual (untimed) games, move history replay, pointer drag-to-move, encrypted in-game chat, lobby your-turn alerts, undo requests, leaderboard, solo play (both sides or vs bot), and speed chess. Synced via shared folder for multiplayer.",
+                           "author":  "WB Games Studio",
+                           "name":  "Wizard\u0027s Chess",
+                           "provides":  {
+                                            "entries":  {
+                                                            "view":  "ChessView.jsx",
+                                                            "service":  "service.cjs",
+                                                            "settings":  "ChessSettings.jsx"
+                                                        },
+                                            "view":  {
+                                                         "id":  "chess",
+                                                         "label":  "Wizard\u0027s Chess"
+                                                     }
+                                        },
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\chess\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "puzzle"
+                       },
+                       {
+                           "id":  "quick-links",
+                           "dirPath":  "S:\\JoseAbraham\\extensions\\quick-links",
+                           "defaultEnabled":  false,
+                           "version":  "1.5.2",
+                           "category":  "tools",
+                           "description":  "Track and launch your most-visited websites, apps, Confluence pages, and Jira tickets. Sorted by frequency so your go-to links are always on top.",
+                           "author":  "Jose Abraham",
+                           "name":  "Quick Links",
+                           "provides":  {
+                                            "entries":  {
+                                                            "view":  "QuickLinksView.jsx"
+                                                        },
+                                            "view":  {
+                                                         "id":  "quick-links",
+                                                         "label":  "Quick Links"
+                                                     }
+                                        },
+                           "manifestPath":  "S:\\JoseAbraham\\extensions\\quick-links\\manifest.json",
+                           "dependencies":  [
+
+                                            ],
+                           "icon":  "activity"
+                       }
+                   ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "interop-hub",
+  "name": "Interop Hub",
+  "version": "1.1.0",
+  "description": "Cross-extension interoperability monitor with event stream, compatibility scan, and integration guidance.",
+  "author": "WB Games Studio",
+  "category": "tools",
+  "icon": "activity",
+  "defaultEnabled": false,
+  "dependencies": [],
+  "provides": {
+    "entries": {
+      "view": "InteropHubView.jsx",
+      "settings": "InteropHubSettings.jsx"
+    },
+    "view": {
+      "id": "interop-hub",
+      "label": "Interop Hub"
+    }
+  }
+}

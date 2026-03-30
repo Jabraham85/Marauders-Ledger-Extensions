@@ -1,0 +1,11 @@
+{
+  "id": "allTasks",
+  "name": "All Tasks Table",
+  "version": "1.0.0",
+  "description": "Cross-department table view of every task with sorting and filtering.",
+  "author": "WB Games Studio",
+  "category": "views",
+  "icon": "table",
+  "defaultEnabled": false,
+  "dependencies": []
+}

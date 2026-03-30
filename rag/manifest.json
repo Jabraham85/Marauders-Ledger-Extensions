@@ -1,0 +1,19 @@
+{
+    "id":  "rag",
+    "name":  "Procedural RAG Engine",
+    "version":  "1.6.5",
+    "description":  "Procedural retrieval-augmented generation with concentric ring search, five Hogwarts professor agents, and dual-registry architecture. Zero AI dependencies at search time. Integrates into the AI Assistant when both are enabled.",
+    "author":  "WB Games Studio",
+    "category":  "ai",
+    "icon":  "sparkles",
+    "defaultEnabled":  false,
+    "dependencies":  [
+                         "ai"
+                     ],
+    "provides":  {
+                     "entries":  {
+                                     "service":  "ragService.js",
+                                     "settings":  "RagView.jsx"
+                                 }
+                 }
+}

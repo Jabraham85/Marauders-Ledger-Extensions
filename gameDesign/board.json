@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "gameDesign",
+  "boardId": "primary",
+  "revision": 10,
+  "updatedAt": "2026-03-23T21:18:41.952Z",
+  "updatedBy": "Jose Abraham",
+  "nodes": [
+    {
+      "id": "node_mn3othj9_ln2ln",
+      "type": "playtestFinding",
+      "title": "Finding: Early churn",
+      "description": "",
+      "x": -220,
+      "y": -120,
+      "width": 220,
+      "height": 140,
+      "media": null,
+      "link": null,
+      "tags": [],
+      "createdAt": 1774300688901,
+      "updatedAt": 1774300688902
+    },
+    {
+      "id": "node_mn3othja_6yif7",
+      "type": "risk",
+      "title": "Risk: Onboarding confusion",
+      "description": "",
+      "x": 68.0952380952381,
+      "y": -128.33333333333334,
+      "width": 220,
+      "height": 140,
+      "media": null,
+      "link": null,
+      "tags": [],
+      "createdAt": 1774300688902,
+      "updatedAt": 1774300706030
+    },
+    {
+      "id": "node_mn3othja_pr4qx",
+      "type": "system",
+      "title": "System to Iterate",
+      "description": "",
+      "x": 320,
+      "y": 60,
+      "width": 220,
+      "height": 140,
+      "media": null,
+      "link": null,
+      "tags": [],
+      "createdAt": 1774300688902,
+      "updatedAt": 1774300688902
+    },
+    {
+      "id": "node_mn3othja_b38cx",
+      "type": "questContent",
+      "title": "Content Slice",
+      "description": "",
+      "x": -865.2380952380952,
+      "y": -350.2380952380952,
+      "width": 220,
+      "height": 140,
+      "media": null,
+      "link": null,
+      "tags": [],
+      "createdAt": 1774300688902,
+      "updatedAt": 1774300720842
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_mn3othja_nrm0a",
+      "source": "node_mn3othj9_ln2ln",
+      "target": "node_mn3othja_pr4qx",
+      "relationType": "supports",
+      "createdAt": 1774300688902
+    },
+    {
+      "id": "edge_mn3othja_ar8t2",
+      "source": "node_mn3othja_6yif7",
+      "target": "node_mn3othja_pr4qx",
+      "relationType": "supports",
+      "createdAt": 1774300688902
+    }
+  ],
+  "workflow": {
+    "vision": false,
+    "coreLoop": false,
+    "systems": true,
+    "progressionEconomy": false,
+    "content": true,
+    "playtest": true
+  },
+  "lastChangeReason": "autosave"
+}

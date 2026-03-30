@@ -1,0 +1,11 @@
+{
+  "id": "activity",
+  "name": "Activity Feed",
+  "version": "1.0.0",
+  "description": "Chronological feed of all task, department, and note changes.",
+  "author": "WB Games Studio",
+  "category": "views",
+  "icon": "activity",
+  "defaultEnabled": false,
+  "dependencies": []
+}

@@ -1,0 +1,16 @@
+{
+  "id": "potterdb",
+  "name": "Harry Potter Lore (Potter DB)",
+  "version": "1.1.0",
+  "description": "Syncs 5000+ characters, 300+ spells, and 160+ potions from the Wizarding World into the RAG index. Data persists across restarts — one sync is all you need.",
+  "author": "WB Games Studio",
+  "category": "ai",
+  "icon": "sparkles",
+  "defaultEnabled": false,
+  "dependencies": ["rag"],
+  "provides": {
+    "entries": {
+      "service": "potterdbService.js"
+    }
+  }
+}

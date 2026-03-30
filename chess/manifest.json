@@ -1,0 +1,57 @@
+{
+  "id": "chess",
+  "name": "Wizard's Chess",
+  "version": "1.3.7",
+  "description": "Two-player chess with live challenges, timed and casual (untimed) games, move history replay, drag-to-move, encrypted in-game chat, lobby your-turn alerts, undo requests, leaderboard, and solo play (both sides or vs bot). Synced via shared folder for multiplayer across the studio.",
+  "author": "WB Games Studio",
+  "category": "community",
+  "icon": "puzzle",
+  "defaultEnabled": false,
+  "dependencies": [],
+  "provides": {
+    "entries": {
+      "view": "ChessView.jsx",
+      "settings": "ChessSettings.jsx",
+      "service": "service.cjs"
+    },
+    "view": {
+      "id": "chess",
+      "label": "Wizard's Chess"
+    }
+  },
+  "config": {
+    "sharedFolderPath": {
+      "type": "string",
+      "label": "Shared Chess Folder (network path for multiplayer sync)",
+      "default": "S:\\JoseAbraham\\extensions\\chess\\shared"
+    },
+    "pollInterval": {
+      "type": "number",
+      "label": "Poll Interval (seconds)",
+      "default": 5
+    },
+    "enableNotifications": {
+      "type": "boolean",
+      "label": "Enable notifications (challenges, turns, messages)",
+      "default": true
+    },
+    "enableChat": {
+      "type": "boolean",
+      "label": "Enable in-game encrypted chat",
+      "default": true
+    },
+    "defaultTimeControl": {
+      "type": "select",
+      "label": "Default Time Control",
+      "default": "10",
+      "options": [
+        { "value": "1", "label": "1 minute (Bullet)" },
+        { "value": "3", "label": "3 minutes (Blitz)" },
+        { "value": "5", "label": "5 minutes (Rapid)" },
+        { "value": "10", "label": "10 minutes (Rapid)" },
+        { "value": "30", "label": "30 minutes (Classical)" },
+        { "value": "0", "label": "Casual (untimed)" }
+      ]
+    }
+  }
+}

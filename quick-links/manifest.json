@@ -1,0 +1,17 @@
+{
+  "id": "quick-links",
+  "name": "Quick Links",
+  "version": "1.5.2",
+  "description": "Track and launch your most-visited websites, apps, Confluence pages, and Jira tickets. Sorted by frequency so your go-to links are always on top.",
+  "author": "Jose Abraham",
+  "category": "tools",
+  "icon": "activity",
+  "defaultEnabled": false,
+  "dependencies": [],
+  "provides": {
+    "view": { "id": "quick-links", "label": "Quick Links" },
+    "entries": {
+      "view": "QuickLinksView.jsx"
+    }
+  }
+}

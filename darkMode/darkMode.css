@@ -1,0 +1,449 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    -webkit-app-region: no-drag;
+  }
+
+  /* Ensure all decorative children inside the drag bar don't interfere */
+  [style*="app-region: drag"] * {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .wizard-term {
+    cursor: help;
+    border-bottom: 1px dotted currentColor;
+    border-bottom-color: inherit;
+    opacity: 1;
+    border-bottom-style: dotted;
+    border-bottom-width: 1px;
+    border-bottom-color: color-mix(in srgb, currentColor 25%, transparent);
+  }
+  .wizard-term:hover {
+    border-bottom-color: color-mix(in srgb, currentColor 60%, transparent);
+  }
+
+  body {
+    font-family: 'Crimson Text', 'Georgia', serif;
+  }
+
+  h1, h2, h3, h4, h5, h6,
+  .font-display {
+    font-family: 'Cinzel', serif;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--hp-border, #D4A574);
+    border-radius: 4px;
+    border: 1px solid var(--hp-surface, #FDF6E3);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--hp-accent, #D3A625);
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: var(--hp-border-dark, #5C2020);
+    border-color: var(--hp-surface-dark, #1A0505);
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: var(--hp-accent, #D3A625);
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .animate-magical {
+    animation: magicalAppear 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes magicalAppear {
+  0% { opacity: 0; transform: scale(0.9) rotate(-1deg); filter: blur(4px); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); filter: blur(0); }
+}
+
+/* Parchment texture via CSS — layered for depth */
+.parchment-bg {
+  background-color: var(--hp-surface, #FDF6E3);
+  background-image:
+    /* Faded corner vignette — aged parchment edges */
+    radial-gradient(ellipse at 0% 0%, rgba(139, 107, 91, 0.08) 0%, transparent 40%),
+    radial-gradient(ellipse at 100% 0%, rgba(139, 107, 91, 0.06) 0%, transparent 35%),
+    radial-gradient(ellipse at 100% 100%, rgba(139, 107, 91, 0.08) 0%, transparent 40%),
+    radial-gradient(ellipse at 0% 100%, rgba(139, 107, 91, 0.06) 0%, transparent 35%),
+    /* Soft parchment stain blobs */
+    radial-gradient(ellipse at 25% 15%, rgba(210, 180, 140, 0.12) 0%, transparent 40%),
+    radial-gradient(ellipse at 75% 60%, rgba(180, 150, 110, 0.08) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 85%, rgba(160, 130, 90, 0.06) 0%, transparent 40%),
+    /* Warm center glow */
+    radial-gradient(ellipse at 50% 30%, rgba(255, 240, 200, 0.15) 0%, transparent 60%);
+  background-attachment: fixed;
+}
+
+.dark .parchment-bg {
+  background-color: var(--hp-surface-dark, #1A0505);
+  background-image:
+    radial-gradient(ellipse at 0% 0%, rgba(0, 0, 0, 0.3) 0%, transparent 40%),
+    radial-gradient(ellipse at 100% 100%, rgba(0, 0, 0, 0.3) 0%, transparent 40%),
+    radial-gradient(ellipse at 25% 15%, rgba(60, 40, 20, 0.25) 0%, transparent 40%),
+    radial-gradient(ellipse at 75% 60%, rgba(50, 35, 15, 0.2) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 30%, rgba(80, 50, 20, 0.15) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* Magical floating particles overlay — applied to the main content area */
+.parchment-bg::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    /* Scattered magical dust */
+    radial-gradient(1px 1px at 10% 15%, var(--hp-accent, #D3A625) 50%, transparent 50%),
+    radial-gradient(1.5px 1.5px at 25% 40%, var(--hp-accent, #D3A625) 50%, transparent 50%),
+    radial-gradient(1px 1px at 40% 10%, var(--hp-accent, #D3A625) 50%, transparent 50%),
+    radial-gradient(1px 1px at 55% 65%, var(--hp-accent, #D3A625) 50%, transparent 50%),
+    radial-gradient(1.5px 1.5px at 70% 30%, var(--hp-accent, #D3A625) 50%, transparent 50%),
+    radial-gradient(1px 1px at 85% 55%, var(--hp-accent, #D3A625) 50%, transparent 50%),
+    radial-gradient(1px 1px at 15% 75%, var(--hp-accent, #D3A625) 50%, transparent 50%),
+    radial-gradient(1.5px 1.5px at 60% 85%, var(--hp-accent, #D3A625) 50%, transparent 50%),
+    radial-gradient(1px 1px at 90% 80%, var(--hp-accent, #D3A625) 50%, transparent 50%),
+    radial-gradient(1px 1px at 35% 90%, var(--hp-accent, #D3A625) 50%, transparent 50%);
+  opacity: 0.2;
+  animation: dustDrift 30s ease-in-out infinite alternate;
+}
+
+.dark .parchment-bg::before {
+  opacity: 0.25;
+}
+
+@keyframes dustDrift {
+  0% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-8px) translateX(4px); }
+  100% { transform: translateY(3px) translateX(-3px); }
+}
+
+/* Hogwarts Legacy art background — image set via --hp-bg-image CSS variable */
+.parchment-bg::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: var(--hp-bg-image, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.14;
+  filter: saturate(0.5);
+}
+
+[data-house="slytherin"] .parchment-bg::after {
+  opacity: 0.18;
+  filter: saturate(0.35);
+}
+
+[data-house="ravenclaw"] .parchment-bg::after {
+  opacity: 0.12;
+  filter: saturate(0.55);
+}
+
+[data-house="hufflepuff"] .parchment-bg::after {
+  opacity: 0.14;
+  filter: saturate(0.5);
+}
+
+.dark .parchment-bg::after {
+  opacity: 0.15;
+  filter: saturate(0.35) brightness(0.5);
+}
+.dark [data-house="slytherin"] .parchment-bg::after {
+  opacity: 0.2;
+}
+.dark [data-house="gryffindor"] .parchment-bg::after {
+  opacity: 0.18;
+}
+
+/* Ornate card styling */
+.card-ornate {
+  position: relative;
+  border: 1px solid var(--hp-border, #D4A574);
+  border-radius: 0.75rem;
+  background: var(--hp-card, #FFFBF0);
+  z-index: 1;
+}
+
+.dark .card-ornate {
+  border-color: var(--hp-border-dark, #5C2020);
+  background: var(--hp-card-dark, #2A1010);
+}
+
+.card-ornate::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid var(--hp-border, #D4A574);
+  border-radius: 0.625rem;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.dark .card-ornate::before {
+  border-color: var(--hp-border-dark, #5C2020);
+}
+
+/* Decorative top accent line on cards */
+.card-ornate::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--hp-accent, #D3A625), transparent);
+  border-radius: 0 0 2px 2px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.dark .card-ornate::after {
+  opacity: 0.35;
+}
+
+/* Markdown body */
+.markdown-body { font-family: 'Crimson Text', 'Georgia', serif; font-size: 1.05rem; line-height: 1.6; }
+.markdown-body h1 { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: 700; margin: 0.75rem 0 0.5rem; color: var(--hp-primary, #7F0909); }
+.markdown-body h2 { font-family: 'Cinzel', serif; font-size: 1.15rem; font-weight: 600; margin: 0.75rem 0 0.4rem; color: var(--hp-primary, #7F0909); }
+.markdown-body h3 { font-family: 'Cinzel', serif; font-size: 1.05rem; font-weight: 600; margin: 0.5rem 0 0.3rem; }
+.markdown-body p { margin: 0.3rem 0; }
+.markdown-body ul, .markdown-body ol { padding-left: 1.5rem; margin: 0.3rem 0; }
+.markdown-body li { margin: 0.15rem 0; }
+.markdown-body ul { list-style-type: disc; }
+.markdown-body ol { list-style-type: decimal; }
+.markdown-body code { background: rgba(0,0,0,0.06); padding: 0.1rem 0.3rem; border-radius: 0.25rem; font-size: 0.85em; font-family: 'Courier New', monospace; }
+.markdown-body pre { background: rgba(0,0,0,0.06); padding: 0.75rem; border-radius: 0.5rem; overflow-x: auto; margin: 0.5rem 0; }
+.markdown-body pre code { background: none; padding: 0; }
+.markdown-body blockquote { border-left: 3px solid var(--hp-accent, #D3A625); padding-left: 0.75rem; margin: 0.5rem 0; color: var(--hp-muted, #8B6B5B); font-style: italic; }
+.markdown-body strong { font-weight: 700; }
+.markdown-body a { color: var(--hp-accent, #D3A625); text-decoration: underline; }
+.markdown-body hr { border: none; border-top: 1px solid var(--hp-border, #D4A574); margin: 0.75rem 0; }
+.markdown-body table { border-collapse: collapse; width: 100%; margin: 0.5rem 0; }
+.markdown-body th, .markdown-body td { border: 1px solid var(--hp-border, #D4A574); padding: 0.35rem 0.5rem; text-align: left; font-size: 0.9em; }
+.markdown-body th { background: var(--hp-surface, #FDF6E3); font-weight: 600; font-family: 'Cinzel', serif; font-size: 0.8em; }
+
+.dark .markdown-body h1, .dark .markdown-body h2 { color: var(--hp-accent, #D3A625); }
+.dark .markdown-body code { background: rgba(255,255,255,0.1); }
+.dark .markdown-body pre { background: rgba(255,255,255,0.06); }
+.dark .markdown-body blockquote { border-left-color: var(--hp-accent, #D3A625); color: var(--hp-muted-dark, #A08878); }
+.dark .markdown-body a { color: var(--hp-accent-light, #EEBA30); }
+.dark .markdown-body hr { border-top-color: var(--hp-border-dark, #5C2020); }
+.dark .markdown-body th, .dark .markdown-body td { border-color: var(--hp-border-dark, #5C2020); }
+.dark .markdown-body th { background: var(--hp-card-dark, #2A1010); }
+
+/* House-specific flourishes applied via data-house attribute */
+[data-house="gryffindor"] .sidebar-glow { box-shadow: inset -2px 0 16px rgba(211, 166, 37, 0.1); }
+[data-house="slytherin"] .sidebar-glow { box-shadow: inset -2px 0 16px rgba(170, 170, 170, 0.08); }
+[data-house="ravenclaw"] .sidebar-glow { box-shadow: inset -2px 0 16px rgba(148, 107, 45, 0.1); }
+[data-house="hufflepuff"] .sidebar-glow { box-shadow: inset -2px 0 16px rgba(236, 185, 57, 0.1); }
+
+/* Top edge glow on main content — mimics light from enchanted ceiling */
+[data-house="gryffindor"] .parchment-bg {
+  border-top: 2px solid transparent;
+  background-image:
+    linear-gradient(180deg, rgba(211, 166, 37, 0.08) 0%, transparent 120px),
+    radial-gradient(ellipse at 0% 0%, rgba(139, 107, 91, 0.08) 0%, transparent 40%),
+    radial-gradient(ellipse at 100% 0%, rgba(139, 107, 91, 0.06) 0%, transparent 35%),
+    radial-gradient(ellipse at 100% 100%, rgba(139, 107, 91, 0.08) 0%, transparent 40%),
+    radial-gradient(ellipse at 0% 100%, rgba(139, 107, 91, 0.06) 0%, transparent 35%),
+    radial-gradient(ellipse at 25% 15%, rgba(210, 180, 140, 0.12) 0%, transparent 40%),
+    radial-gradient(ellipse at 75% 60%, rgba(180, 150, 110, 0.08) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 30%, rgba(255, 240, 200, 0.15) 0%, transparent 60%);
+}
+[data-house="slytherin"] .parchment-bg {
+  background-image:
+    linear-gradient(180deg, rgba(170, 170, 170, 0.05) 0%, transparent 120px),
+    radial-gradient(ellipse at 0% 0%, rgba(26, 71, 42, 0.06) 0%, transparent 40%),
+    radial-gradient(ellipse at 100% 100%, rgba(26, 71, 42, 0.06) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 50%, rgba(122, 164, 142, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 25% 15%, rgba(180, 210, 190, 0.08) 0%, transparent 40%),
+    radial-gradient(ellipse at 75% 60%, rgba(160, 190, 170, 0.06) 0%, transparent 45%);
+}
+[data-house="ravenclaw"] .parchment-bg {
+  background-image:
+    linear-gradient(180deg, rgba(148, 107, 45, 0.06) 0%, transparent 120px),
+    radial-gradient(ellipse at 0% 0%, rgba(14, 26, 64, 0.05) 0%, transparent 40%),
+    radial-gradient(ellipse at 100% 100%, rgba(14, 26, 64, 0.05) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 50%, rgba(184, 168, 138, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 25% 15%, rgba(200, 190, 170, 0.1) 0%, transparent 40%),
+    radial-gradient(ellipse at 75% 60%, rgba(180, 170, 150, 0.06) 0%, transparent 45%);
+}
+[data-house="hufflepuff"] .parchment-bg {
+  background-image:
+    linear-gradient(180deg, rgba(236, 185, 57, 0.06) 0%, transparent 120px),
+    radial-gradient(ellipse at 0% 0%, rgba(55, 46, 41, 0.05) 0%, transparent 40%),
+    radial-gradient(ellipse at 100% 100%, rgba(55, 46, 41, 0.05) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 50%, rgba(212, 188, 140, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 25% 15%, rgba(251, 245, 230, 0.1) 0%, transparent 40%),
+    radial-gradient(ellipse at 75% 60%, rgba(220, 200, 160, 0.08) 0%, transparent 45%);
+}
+
+[data-house="ravenclaw"] .sidebar-stars {
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, rgba(148,107,45,0.4) 50%, transparent 50%),
+    radial-gradient(1px 1px at 30% 60%, rgba(148,107,45,0.3) 50%, transparent 50%),
+    radial-gradient(1.5px 1.5px at 70% 15%, rgba(205,127,50,0.35) 50%, transparent 50%),
+    radial-gradient(1px 1px at 85% 45%, rgba(148,107,45,0.25) 50%, transparent 50%),
+    radial-gradient(1px 1px at 50% 80%, rgba(205,127,50,0.3) 50%, transparent 50%),
+    radial-gradient(1.5px 1.5px at 15% 90%, rgba(148,107,45,0.2) 50%, transparent 50%);
+}
+
+/* Gryffindor: warm gold accent glow on active elements */
+[data-house="gryffindor"] .card-ornate {
+  box-shadow: 0 1px 8px rgba(211, 166, 37, 0.06);
+}
+[data-house="gryffindor"] .card-ornate:hover {
+  box-shadow: 0 2px 16px rgba(211, 166, 37, 0.12);
+}
+
+/* Slytherin: cool silver shimmer on hover */
+[data-house="slytherin"] .card-ornate {
+  box-shadow: 0 1px 8px rgba(170, 170, 170, 0.05);
+}
+[data-house="slytherin"] .card-ornate:hover {
+  box-shadow: 0 2px 16px rgba(170, 170, 170, 0.1);
+  border-color: rgba(192, 192, 192, 0.4);
+}
+
+/* Ravenclaw: bronze accent underlines on headings */
+[data-house="ravenclaw"] .font-display {
+  text-decoration-color: rgba(148, 107, 45, 0.3);
+}
+[data-house="ravenclaw"] .card-ornate {
+  box-shadow: 0 1px 8px rgba(148, 107, 45, 0.06);
+}
+
+/* Hufflepuff: warm honey gradient header and yellow pulse on badges */
+[data-house="hufflepuff"] .sidebar-glow {
+  background-image: linear-gradient(to bottom, rgba(236, 185, 57, 0.06) 0%, transparent 30%);
+}
+[data-house="hufflepuff"] .card-ornate {
+  box-shadow: 0 1px 8px rgba(236, 185, 57, 0.06);
+}
+[data-house="hufflepuff"] .card-ornate:hover {
+  box-shadow: 0 2px 16px rgba(236, 185, 57, 0.1);
+}
+
+/* Decorative section divider — use between header and content */
+.magic-divider {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--hp-border, #D4A574) 15%,
+    var(--hp-accent, #D3A625) 50%,
+    var(--hp-border, #D4A574) 85%,
+    transparent 100%
+  );
+  opacity: 0.4;
+  margin: 0.75rem 0;
+}
+
+.dark .magic-divider {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--hp-border-dark, #5C2020) 15%,
+    var(--hp-accent, #D3A625) 50%,
+    var(--hp-border-dark, #5C2020) 85%,
+    transparent 100%
+  );
+  opacity: 0.3;
+}
+
+/* Sorting Hat style accents for select/input fields */
+select, input[type="text"], input[type="email"], input[type="date"], input[type="time"], textarea {
+  font-family: 'Crimson Text', serif;
+}
+
+/* Ensure the app title uses display font */
+.font-display, [class*="font-display"] {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.02em;
+}
+
+/* Dark mode: comprehensive text visibility overrides */
+html.dark,
+html.dark body {
+  color: #E8E0D0 !important;
+}
+
+html.dark p,
+html.dark span,
+html.dark h1, html.dark h2, html.dark h3, html.dark h4, html.dark h5, html.dark h6,
+html.dark label,
+html.dark li,
+html.dark td, html.dark th,
+html.dark dt, html.dark dd,
+html.dark a,
+html.dark div {
+  color: inherit;
+}
+
+html.dark .text-hp-text,
+html.dark [class*="dark\:text-hp-text-dark"] {
+  color: var(--hp-text-dark, #F5E6D0) !important;
+}
+
+html.dark .text-hp-muted,
+html.dark [class*="dark\:text-hp-muted-dark"] {
+  color: var(--hp-muted-dark, #A08878) !important;
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select,
+html.dark option {
+  color: var(--hp-text-dark, #E8E0D0) !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #8A8070 !important;
+}
+
+html.dark .text-sm,
+html.dark .text-xs,
+html.dark .text-base,
+html.dark .text-lg {
+  color: inherit;
+}

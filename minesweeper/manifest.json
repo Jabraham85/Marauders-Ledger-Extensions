@@ -1,0 +1,42 @@
+{
+  "id": "minesweeper",
+  "name": "Minesweeper",
+  "version": "1.0.0",
+  "description": "Classic Minesweeper game — take a break without leaving the Ledger.",
+  "author": "Studio Tools",
+  "category": "community",
+  "icon": "puzzle",
+  "defaultEnabled": false,
+  "dependencies": [],
+  "provides": {
+    "view": {
+      "id": "minesweeper",
+      "label": "Minesweeper",
+      "component": "./MinesweeperView.jsx"
+    },
+    "entries": {
+      "view": "MinesweeperView.jsx"
+    }
+  },
+  "config": {
+    "defaultDifficulty": {
+      "type": "select",
+      "label": "Default Difficulty",
+      "default": "beginner",
+      "options": [
+        {
+          "value": "beginner",
+          "label": "Beginner (9x9, 10 mines)"
+        },
+        {
+          "value": "intermediate",
+          "label": "Intermediate (16x16, 40 mines)"
+        },
+        {
+          "value": "expert",
+          "label": "Expert (30x16, 99 mines)"
+        }
+      ]
+    }
+  }
+}

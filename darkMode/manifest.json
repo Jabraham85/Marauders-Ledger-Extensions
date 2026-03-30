@@ -1,0 +1,11 @@
+{
+  "id": "darkMode",
+  "name": "Dark Mode",
+  "version": "1.2.0",
+  "description": "Toggle between light and dark theme. v1.2.0 adds CSS baseline fix for guaranteed text visibility in all dark mode views.",
+  "author": "WB Games Studio",
+  "category": "appearance",
+  "icon": "moon",
+  "defaultEnabled": false,
+  "dependencies": []
+}

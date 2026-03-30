@@ -1,0 +1,11 @@
+{
+  "id": "dataBackup",
+  "name": "Data Backup & Export",
+  "version": "1.0.0",
+  "description": "Export/import all data as JSON, or export tasks as CSV.",
+  "author": "WB Games Studio",
+  "category": "tools",
+  "icon": "download",
+  "defaultEnabled": false,
+  "dependencies": []
+}

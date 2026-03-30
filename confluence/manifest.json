@@ -1,0 +1,20 @@
+{
+  "id": "confluence",
+  "name": "Confluence Integration",
+  "version": "1.2.7",
+  "description": "Sync and search Confluence pages via Atlassian API. Feeds AI context and glossary.",
+  "author": "WB Games Studio",
+  "category": "integrations",
+  "icon": "book",
+  "defaultEnabled": false,
+  "dependencies": [],
+  "provides": {
+    "view": {
+      "id": "confluence",
+      "label": "Confluence"
+    },
+    "entries": {
+      "view": "ConfluenceView.jsx"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "slack",
+  "name": "Slack Integration",
+  "version": "1.0.0",
+  "description": "Sync and search Slack messages. Provides context for AI reports.",
+  "author": "WB Games Studio",
+  "category": "integrations",
+  "icon": "chat",
+  "defaultEnabled": false,
+  "dependencies": []
+}

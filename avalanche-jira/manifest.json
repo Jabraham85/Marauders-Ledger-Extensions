@@ -1,0 +1,50 @@
+{
+  "id": "avalanche-jira",
+  "name": "Jira Ticket Tool",
+  "version": "3.4.0",
+  "description": "Jira template and ticket workflow from Avalanche: fetch, list, Kanban, edit, and sync with the same field mapping as the desktop app.",
+  "author": "Your Name",
+  "category": "integrations",
+  "icon": "puzzle",
+  "defaultEnabled": false,
+  "dependencies": [],
+  "provides": {
+    "entries": {
+      "view": "AvalancheView.jsx",
+      "settings": "AvalancheSettings.jsx",
+      "service": "service.cjs"
+    },
+    "view": {
+      "id": "avalanche-jira-view",
+      "label": "Jira Ticket Tool"
+    }
+  },
+  "config": {
+    "jiraBaseUrl": {
+      "type": "string",
+      "label": "Jira base URL",
+      "default": "",
+      "description": "Your site URL only (no /jira path). Example: https://your-company.atlassian.net"
+    },
+    "jiraEmail": {
+      "type": "string",
+      "label": "Jira email (API user)",
+      "default": ""
+    },
+    "jiraApiToken": {
+      "type": "password",
+      "label": "Jira API token",
+      "default": ""
+    },
+    "defaultProjectKey": {
+      "type": "string",
+      "label": "Default project key",
+      "default": "SUNDANCE"
+    },
+    "startupSync": {
+      "type": "boolean",
+      "label": "Run background sync on open (when credentials set)",
+      "default": true
+    }
+  }
+}

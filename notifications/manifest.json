@@ -1,0 +1,11 @@
+{
+  "id": "notifications",
+  "name": "Deadline Notifications",
+  "version": "1.0.0",
+  "description": "Bell icon alerts for overdue and upcoming task deadlines.",
+  "author": "WB Games Studio",
+  "category": "tools",
+  "icon": "bell",
+  "defaultEnabled": false,
+  "dependencies": []
+}

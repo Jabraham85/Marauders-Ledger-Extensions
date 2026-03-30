@@ -1,0 +1,39 @@
+{
+  "id": "cue-tracker",
+  "name": "GrudgeDB",
+  "version": "3.3.8",
+  "description": "GrudgeDB v3. Music cue SSOT — Groups + Cues tabs, per-version Variants (stems/segments auto-parsed by filename), multi-reviewer Review, References overlay. Optional integration: Game Design Board (→ Board button in Groups when installed).",
+  "author": "WB Games Audio",
+  "category": "tools",
+  "icon": "activity",
+  "defaultEnabled": false,
+  "dependencies": [],
+  "provides": {
+    "view": {
+      "id": "cue-tracker",
+      "label": "GrudgeDB"
+    },
+    "entries": {
+      "view": "CueTrackerView.jsx",
+      "settings": "CueTrackerSettings.jsx",
+      "service": "service.cjs"
+    }
+  },
+  "config": {
+    "sharedDbPath": {
+      "type": "string",
+      "label": "Shared Database File (network drive path for team sync)",
+      "default": "S:\\JoseAbraham\\extensions\\cue-tracker\\cue-tracker-db.json"
+    },
+    "workspaceRoot": {
+      "type": "string",
+      "label": "Default Wwise Workspace Root",
+      "default": ""
+    },
+    "jiraBaseUrl": {
+      "type": "string",
+      "label": "Jira Base URL override (leave blank to auto-detect from domain)",
+      "default": ""
+    }
+  }
+}

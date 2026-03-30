@@ -1,0 +1,11 @@
+{
+  "id": "outlook",
+  "name": "Outlook Integration",
+  "version": "1.0.0",
+  "description": "Schedule meetings, view calendar events, and search contacts via Outlook.",
+  "author": "WB Games Studio",
+  "category": "integrations",
+  "icon": "mail",
+  "defaultEnabled": false,
+  "dependencies": []
+}

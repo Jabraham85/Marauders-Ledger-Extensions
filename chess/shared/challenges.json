@@ -1,0 +1,58 @@
+{
+  "challenges": [
+    {
+      "id": "9cd2-1a21-41cf",
+      "from": "f04ba441-fa78-42ee-8252-41473ebaa6d8",
+      "to": "6cb98382-117b-43af-b03e-2728b5f52510",
+      "fromName": "AJ",
+      "toName": "Jose Abraham",
+      "createdAt": 1774035840820,
+      "timeControl": "10",
+      "status": "accepted",
+      "gameId": "aeeb7096-f6d4-4800-af33-5da7f978479a"
+    },
+    {
+      "id": "102c-c656-0ff1",
+      "from": "43b4fa85-036a-4254-9ad9-d714fffc0ef2",
+      "to": "6cb98382-117b-43af-b03e-2728b5f52510",
+      "fromName": "MJ Galicha",
+      "toName": "Jose Abraham",
+      "createdAt": 1774044519653,
+      "timeControl": "10",
+      "status": "pending"
+    },
+    {
+      "id": "4bdb-c028-c613",
+      "from": "6cb98382-117b-43af-b03e-2728b5f52510",
+      "to": "c9e509a2-15ba-4859-a170-e624325de0a2",
+      "fromName": "Jose Abraham",
+      "toName": "Ryan",
+      "createdAt": 1774302196995,
+      "timeControl": "10",
+      "status": "accepted",
+      "gameId": "058a426f-dd29-432e-a1f5-fc42101cb684"
+    },
+    {
+      "id": "78f7-35f2-3603",
+      "from": "b2bd4775-e220-498d-bd9b-0b11bb130d99",
+      "to": "6cb98382-117b-43af-b03e-2728b5f52510",
+      "fromName": "MJ",
+      "toName": "Jose Abraham",
+      "createdAt": 1774544534501,
+      "updatedAt": 1774544534501,
+      "timeControl": "10",
+      "status": "pending"
+    },
+    {
+      "id": "76f9-8ddd-08d8",
+      "from": "8ff72d6e-63db-41c0-ae05-bf5f03f99a08",
+      "to": "6cb98382-117b-43af-b03e-2728b5f52510",
+      "fromName": "MJ Galicha",
+      "toName": "Jose Abraham",
+      "createdAt": 1774544790695,
+      "updatedAt": 1774544790695,
+      "timeControl": "10",
+      "status": "pending"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "onenote",
+  "name": "OneNote Integration",
+  "version": "1.1.0",
+  "description": "Two-way sync with Microsoft OneNote. When active, replaces the built-in note system with your OneNote notebooks. Use Ctrl+Alt+Space to capture quick notes from anywhere.",
+  "author": "WB Games Studio",
+  "category": "integrations",
+  "icon": "notebook",
+  "defaultEnabled": false,
+  "dependencies": []
+}

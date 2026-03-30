@@ -1,0 +1,16 @@
+{
+  "id": "knowledgeSources",
+  "name": "Knowledge Sources",
+  "version": "1.0.7",
+  "description": "Add custom files (PDF, DOCX, Excel, CSV, TXT), URLs, or entire wiki sites to expand the AI knowledge base.",
+  "author": "WB Games Studio",
+  "category": "ai",
+  "icon": "book",
+  "defaultEnabled": false,
+  "dependencies": ["ai"],
+  "provides": {
+    "entries": {
+      "settings": "KnowledgeSourcesPanel.jsx"
+    }
+  }
+}

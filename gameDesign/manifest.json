@@ -1,0 +1,22 @@
+{
+    "id":  "gameDesign",
+    "defaultEnabled":  true,
+    "version":  "1.8.0",
+    "category":  "views",
+    "description":  "Native game-design board with corner-resize, inline editing, bezier connections with arrows, and asset protocol image support.",
+    "author":  "WB Games Studio",
+    "name":  "Game Design Studio",
+    "provides":  {
+                     "entries":  {
+                                     "view":  "GameDesignBoardView.jsx"
+                                 },
+                     "view":  {
+                                  "id":  "gameDesign",
+                                  "label":  "Game Design Studio"
+                              }
+                 },
+    "dependencies":  [
+
+                     ],
+    "icon":  "puzzle"
+}

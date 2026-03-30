@@ -1,0 +1,11 @@
+{
+  "id": "calendar",
+  "name": "Calendar",
+  "version": "1.0.0",
+  "description": "Week/day/month calendar view synced with Outlook events and task deadlines.",
+  "author": "WB Games Studio",
+  "category": "views",
+  "icon": "calendar",
+  "defaultEnabled": false,
+  "dependencies": []
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ai",
+  "name": "AI Assistant",
+  "version": "2.9.0",
+  "description": "Multi-format LLM client supporting Ollama, OpenAI, and custom endpoints. RAG-aware chat with professor agent routing, extended search mode, Deep Dive multi-round search with preliminary findings and clarifying questions, and cost estimation.",
+  "author": "WB Games Studio",
+  "category": "ai",
+  "icon": "sparkles",
+  "defaultEnabled": false,
+  "dependencies": [],
+  "provides": {
+    "entries": {
+      "service": "aiLlmService.js",
+      "view": "AiChatView.jsx"
+    },
+    "view": {
+      "id": "ai-chat",
+      "label": "AI Chat"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "glossary",
+  "name": "Glossary & Spellcheck",
+  "version": "1.0.0",
+  "description": "Auto-extract technical terms from Confluence for spellcheck dictionary.",
+  "author": "WB Games Studio",
+  "category": "tools",
+  "icon": "glossary",
+  "defaultEnabled": false,
+  "dependencies": ["confluence"]
+}
